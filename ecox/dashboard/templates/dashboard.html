@@ -1,0 +1,352 @@
+{% extends "base.html" %}
+{% load i18n dashboard %}
+
+{% block content %}
+<!-- Page Content -->
+<div id="page-wrapper">
+    <div class="container-fluid">
+        {% include "breadcrumb.html" %}
+        <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12">
+                <div class="white-box">
+                    <div class="row row-in">
+                        <div class="col-lg-3 col-sm-6 row-in-br">
+                            <div class="col-in row">
+                                <div class="col-md-6 col-sm-6 col-xs-6"> <i data-icon="" class="linea-icon linea-elaborate"></i>
+                                    <h5 class="text-muted vb">EXPENSES</h5>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-6">
+                                    <h3 class="counter text-right m-t-15 text-danger">{{ total_expense }}</h3>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"> <span class="sr-only">40% Complete (success)</span> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 row-in-br">
+                            <div class="col-in row">
+                                <div class="col-md-6 col-sm-6 col-xs-6"> <i class="linea-icon linea-elaborate" data-icon="9"></i>
+                                    <h5 class="text-muted vb">NEW TASKS</h5>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-6">
+                                    <h3 class="counter text-right m-t-15 text-primary">157</h3>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"> <span class="sr-only">40% Complete (success)</span> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 row-in-br  b-r-none">
+                            <div class="col-in row">
+                                <div class="col-md-6 col-sm-6 col-xs-6"> <i class="linea-icon linea-basic" data-icon=""></i>
+                                    <h5 class="text-muted vb">NEW PROJECTS</h5>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-6">
+                                    <h3 class="counter text-right m-t-15 text-megna">169</h3>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-megna" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"> <span class="sr-only">40% Complete (success)</span> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6  b-0">
+                            <div class="col-in row">
+                                <div class="col-md-6 col-sm-6 col-xs-6"> <i class="linea-icon linea-basic" data-icon=""></i>
+                                    <h5 class="text-muted vb">All PROJECTS</h5>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-6">
+                                    <h3 class="counter text-right m-t-15 text-success">431</h3>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"> <span class="sr-only">40% Complete (success)</span> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+        <!-- .row -->
+        <div class="row">
+            <div class="col-md-12 col-sm-6">
+                <div class="white-box">
+                    <h3 class="box-title">{% trans "Expenses" %}</h3>
+                    <div class="row">
+                        {% for expense in expenses_data %}
+                        <div class="col-md-4">
+                            <div class="table-responsive">
+                                <p class="text-muted">{% if expense.moment == 'current' %}{% trans "Current month" %}{% elif expense.moment == 'past' %}{% trans "Last month" %}{% else %}{% trans "Next month" %}{% endif %}</p>
+                                <table class="table full-color-table full-{% if expense.moment == 'current' %}info{% elif expense.moment == 'future' %}success{% else %}inverse{% endif %}-table hover-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>{% trans "Concept" %}</th>
+                                            <th>{% trans "Amount" %}</th>
+                                            <th>{% trans "Porcent" %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>{% trans "Debts" %}</td>
+                                            <td>{{ expense.negative_debts_balance }}</td>
+                                            <td>{{ expense.negative_debts_balance|percent:expense.total_expense }}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>{% trans "Passages" %}</td>
+                                            <td>{{ expense.passage_balance }}</td>
+                                            <td>{{ expense.passage_balance|percent:expense.total_expense }}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>{% trans "Services" %}</td>
+                                            <td>{{ expense.service_balance }}</td>
+                                            <td>{{ expense.service_balance|percent:expense.total_expense }}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>4</td>
+                                            <td>{% trans "Food" %}</td>
+                                            <td>{{ expense.food_balance }}</td>
+                                            <td>{{ expense.food_balance|percent:expense.total_expense }}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5</td>
+                                            <td>{% trans "Lease" %}</td>
+                                            <td>{{ expense.lease_balance }}</td>
+                                            <td>{{ expense.lease_balance|percent:expense.total_expense }}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>6</td>
+                                            <td>{% trans "Family" %}</td>
+                                            <td>{{ expense.family_balance }}</td>
+                                            <td>{{ expense.family_balance|percent:expense.total_expense }}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><b>TOTAL</b></td>
+                                            <td><b>{{ expense.total_expense }}</b></td>
+                                            <td><b>{{ expense.total_expense|percent:expense.total_expense }}%</b></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+        <!-- .row -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="white-box">
+                    <h3 class="box-title">{% trans "Debts" %}</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="table-responsive">
+                                <table class="table full-color-table full-inverse-table hover-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>{% trans "Concept" %}</th>
+                                            <th>{% trans "Amount" %}</th>
+                                            <th>{% trans "Porcent" %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>{% trans "Debts" %}</td>
+                                            <td></td>
+                                            <td>%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+        <!-- .row -->
+        <div class="row">
+            <div class="col-md-12 col-sm-6">
+                <div class="white-box">
+                    <h3 class="box-title">{% trans "Expenses" %}</h3>
+                    <div class="row">
+                        {% for expense in expenses_data %}
+                        <div class="col-md-6">
+                            <div class="table-responsive">
+                                <p class="text-muted">{% trans "Last month" %}</p>
+                                {% now "n" as current_month %}
+                                {% if current_month == expense.date|date:"n" %}
+                                <table class="table full-color-table full-info-table hover-table">
+                                {% else %}
+                                <table class="table full-color-table full-inverse-table hover-table">
+                                {% endif %}
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>{% trans "Concept" %}</th>
+                                            <th>{% trans "Amount" %}</th>
+                                            <th>{% trans "Porcent" %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>{% trans "Debts" %}</td>
+                                            <td>{{ expense.negative_debts_balance }}</td>
+                                            <td>{{ expense.negative_debts_balance|percent:expense.total_expense }}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>{% trans "Passages" %}</td>
+                                            <td>{{ expense.passage_balance }}</td>
+                                            <td>{{ expense.passage_balance|percent:expense.total_expense }}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>{% trans "Services" %}</td>
+                                            <td>{{ expense.service_balance }}</td>
+                                            <td>{{ expense.service_balance|percent:expense.total_expense }}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>4</td>
+                                            <td>{% trans "Food" %}</td>
+                                            <td>{{ expense.food_balance }}</td>
+                                            <td>{{ expense.food_balance|percent:expense.total_expense }}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5</td>
+                                            <td>{% trans "Lease" %}</td>
+                                            <td>{{ expense.lease_balance }}</td>
+                                            <td>{{ expense.lease_balance|percent:expense.total_expense }}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td>6</td>
+                                            <td>{% trans "Family" %}</td>
+                                            <td>{{ expense.family_balance }}</td>
+                                            <td>{{ expense.family_balance|percent:expense.total_expense }}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td><b>TOTAL</b></td>
+                                            <td><b>{{ expense.total_expense }}</b></td>
+                                            <td><b>{{ expense.total_expense|percent:expense.total_expense }}%</b></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+        <!-- .row -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="white-box">
+                    <ul class="timeline">
+                        <li>
+                            <div class="timeline-badge success"><i class="fa fa-plus"></i> </div>
+                            <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                    <h4 class="timeline-title">Task created</h4>
+                                    <p><small class="text-muted"><i class="fa fa-clock-o"></i> 2 hours ago via Twitter</small> </p>
+                                </div>
+                                <div class="timeline-body">
+                                    <p>Título de la tarea.</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="timeline-inverted">
+                            <div class="timeline-badge warning"><i class="fa fa-pencil"></i>  </div>
+                            <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                    <h4 class="timeline-title">Task edit</h4>
+                                    <p><small class="text-muted"><i class="fa fa-clock-o"></i> 7 hours ago via Twitter</small> </p>
+                                </div>
+                                <div class="timeline-body">
+                                    <p><img class="img-responsive" alt="user" src="../plugins/images/big/img1.jpg"></p>
+                                    <p>Título de la tarea.</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-badge warning"><i class="fa fa-pencil"></i>  </div>
+                            <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                    <h4 class="timeline-title">Task edit</h4>
+                                    <p><small class="text-muted"><i class="fa fa-clock-o"></i> 7 hours ago via Twitter</small> </p>
+                                </div>
+                                <div class="timeline-body">
+                                    <p><img class="img-responsive" alt="user" src="../plugins/images/big/img1.jpg"></p>
+                                    <p>Título de la tarea.</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="timeline-inverted">
+                            <div class="timeline-badge danger"><i class="fa fa-times"></i> </div>
+                            <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                <p><small class="text-muted"><i class="fa fa-clock-o"></i> 10 hours ago via Twitter</small> </p>
+                                    <h4 class="timeline-title">Task deleted</h4>
+                                </div>
+                                <div class="timeline-body">
+                                    <p>Título de la tarea.</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="timeline-badge warning"><i class="fa fa-pencil"></i>  </div>
+                            <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                    <h4 class="timeline-title">Task edit</h4>
+                                    <p><small class="text-muted"><i class="fa fa-clock-o"></i> 11 hours ago via Twitter</small> </p>
+                                </div>
+                                <div class="timeline-body">
+                                    <p><img class="img-responsive" alt="user" src="../plugins/images/big/img1.jpg"></p>
+                                    <p>Título de la tarea.</p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="white-box">
+                    <h3 class="box-title">Pie Chart</h3>
+                    <div id="expenses_chart" class="text-center"><canvas width="200" height="200" style="display: inline-block; width: 200px; height: 200px; vertical-align: top;"></canvas></div>
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+    </div>
+</div>
+{% block extra_js %}
+<script type="text/javascript">
+    $('#expenses_chart').sparkline([20, 40, 40], {
+        type: 'pie',
+        height: '200',
+        resize: true,
+        sliceColors: ['#13dafe', '#6164c1', '#f1f2f7']
+    });
+</script>
+
+{% endblock %}
+{% endblock %}
