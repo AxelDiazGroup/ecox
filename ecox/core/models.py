@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
 from django.utils import timezone
+from django.db.models import Sum
 
 from djmoney.models.fields import MoneyField
 
@@ -41,7 +42,7 @@ class Person(models.Model):
         return "{}".format(self.name)
 
 
-class GetMoment(object):
+class Moment(object):
 
     def get_moment(self, date_filter, variables={}):
         variables.update({'moment': 'current'})
@@ -50,3 +51,17 @@ class GetMoment(object):
         elif date_filter.month > timezone.now().month:
             variables.update({'moment': 'future'})
         return variables
+
+    def get_variables(self, date_filter):
+        variables = {'date': date_filter}
+        variables.update(self.get_moment(date_filter, variables))
+        return variables
+
+
+class Balance(object):
+
+    def get_sum_balance(self, balance):
+        if balance.exists():
+            return float(balance.aggregate(Sum('balance'))['balance__sum'])
+        else:
+            return 0

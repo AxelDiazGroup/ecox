@@ -1,9 +1,8 @@
 from django.db import models
-from django.db.models import Sum
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from core.models import Account, Person, GetMoment
+from core.models import Account, Person, Moment, Balance
 
 
 class Debt(Account):
@@ -45,23 +44,13 @@ class Family(Account):
         return "{}".format(self.description)
 
 
-class Expense(GetMoment):
+class DebtLibrary(Moment, Balance):
     def __init__(self, start=timezone.now()):
         self.start = start
-        self.debts = self.get_debt_balance()
-        self.passages = self.get_passage_balance()
-        self.services = self.get_services_balance()
-        self.food = self.get_food_balance()
-        self.lease = self.get_lease_balance()
-        self.family = self.get_family_balance()
 
-    def get_sum_balance(self, balance):
-        if balance.exists():
-            return float(balance.aggregate(Sum('balance'))['balance__sum'])
-        else:
-            return 0
+    def get_debts(self):
+        return self.get_debt_balance()
 
-    # Debt
     def get_negative_debts(self):
         return Debt.objects.filter(
             pay_off=False, start__month=self.start.month)
@@ -79,6 +68,25 @@ class Expense(GetMoment):
     def get_debt_balance(self):
         return self.get_positive_debts_balance() - \
             self.get_negative_debts_balance()
+
+    def get_dict(self, date_filter):
+        debt = {'amount': 0, 'description': ''}
+        debts = Debt.objects.filter(start__month=self.start.month)
+        if not debts.exists():
+            return debt
+        else:
+            return debt.values()
+        return debts
+
+
+class ExpenseLibrary(DebtLibrary, Balance):
+    def __init__(self, start=timezone.now()):
+        self.start = start
+        self.food = self.get_food_balance()
+        self.lease = self.get_lease_balance()
+        self.passages = self.get_passage_balance()
+        self.services = self.get_services_balance()
+        self.family = self.get_family_balance()
 
     # Passage
     def get_passage(self):
@@ -116,6 +124,7 @@ class Expense(GetMoment):
         return self.get_sum_balance(self.get_family())
 
     def get_dict(self, date_filter):
+        variables = self.get_variables(date_filter)
         total_expense = \
             self.get_negative_debts_balance() + \
             self.passages + \
@@ -123,18 +132,15 @@ class Expense(GetMoment):
             self.food + \
             self.family
 
-        variables = {}
         variables.update(
             {'negative_debts_balance': self.get_negative_debts_balance()})
         variables.update(
             {'positive_debts_balance': self.get_positive_debts_balance()})
-        variables.update({'debts_balance': self.debts})
+        variables.update({'debts_balance': self.get_debts()})
         variables.update({'passage_balance': self.passages})
         variables.update({'service_balance': self.services})
         variables.update({'food_balance': self.food})
         variables.update({'lease_balance': self.lease})
         variables.update({'family_balance': self.family})
         variables.update({'total_expense': total_expense})
-        variables.update({'date': date_filter})
-        variables.update(self.get_moment(date_filter, variables))
         return variables

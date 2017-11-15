@@ -149,53 +149,15 @@
         <!-- /.row -->
         <!-- .row -->
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 col-sm-6">
                 <div class="white-box">
                     <h3 class="box-title">{% trans "Debts" %}</h3>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="table-responsive">
-                                <table class="table full-color-table full-inverse-table hover-table">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>{% trans "Concept" %}</th>
-                                            <th>{% trans "Amount" %}</th>
-                                            <th>{% trans "Porcent" %}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>{% trans "Debts" %}</td>
-                                            <td></td>
-                                            <td>%</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /.row -->
-        <!-- .row -->
-        <div class="row">
-            <div class="col-md-12 col-sm-6">
-                <div class="white-box">
-                    <h3 class="box-title">{% trans "Expenses" %}</h3>
-                    <div class="row">
                         {% for expense in expenses_data %}
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="table-responsive">
-                                <p class="text-muted">{% trans "Last month" %}</p>
-                                {% now "n" as current_month %}
-                                {% if current_month == expense.date|date:"n" %}
-                                <table class="table full-color-table full-info-table hover-table">
-                                {% else %}
-                                <table class="table full-color-table full-inverse-table hover-table">
-                                {% endif %}
+                                <p class="text-muted">{% if expense.moment == 'current' %}{% trans "Current month" %}{% elif expense.moment == 'past' %}{% trans "Last month" %}{% else %}{% trans "Next month" %}{% endif %}</p>
+                                <table class="table full-color-table full-{% if expense.moment == 'current' %}info{% elif expense.moment == 'future' %}success{% else %}inverse{% endif %}-table hover-table">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -210,36 +172,6 @@
                                             <td>{% trans "Debts" %}</td>
                                             <td>{{ expense.negative_debts_balance }}</td>
                                             <td>{{ expense.negative_debts_balance|percent:expense.total_expense }}%</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>{% trans "Passages" %}</td>
-                                            <td>{{ expense.passage_balance }}</td>
-                                            <td>{{ expense.passage_balance|percent:expense.total_expense }}%</td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>{% trans "Services" %}</td>
-                                            <td>{{ expense.service_balance }}</td>
-                                            <td>{{ expense.service_balance|percent:expense.total_expense }}%</td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td>{% trans "Food" %}</td>
-                                            <td>{{ expense.food_balance }}</td>
-                                            <td>{{ expense.food_balance|percent:expense.total_expense }}%</td>
-                                        </tr>
-                                        <tr>
-                                            <td>5</td>
-                                            <td>{% trans "Lease" %}</td>
-                                            <td>{{ expense.lease_balance }}</td>
-                                            <td>{{ expense.lease_balance|percent:expense.total_expense }}%</td>
-                                        </tr>
-                                        <tr>
-                                            <td>6</td>
-                                            <td>{% trans "Family" %}</td>
-                                            <td>{{ expense.family_balance }}</td>
-                                            <td>{{ expense.family_balance|percent:expense.total_expense }}%</td>
                                         </tr>
                                         <tr>
                                             <td></td>

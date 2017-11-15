@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from core.models import COLORS
-from expense.models import Debt, Expense
+from expense.models import DebtLibrary, ExpenseLibrary
 
 
 class DashboardView(View):
@@ -25,7 +25,7 @@ class DashboardView(View):
             'current_page_title': _('Economy'),
         }
         expense_list = []
-        item_chart = {}
+        variables = {}
         expenses_data = []
 
         dates = (
@@ -34,17 +34,13 @@ class DashboardView(View):
             timezone.now() + relativedelta(months=1),
         )
         for date_filter in dates:
-            expense = Expense(date_filter)
-
-            variables = expense.get_dict(date_filter)
-
-            for key, value in list(expense.__dict__.items()):
-                if isinstance(value, (datetime, date)):
-                    value = value.isoformat()
-                item_chart = {'name': key, 'value': value}
-                expense_list.append(dict(item_chart))
-            variables.update({'expenses': json.dumps(expense_list)})
-            expenses_data.append(variables)
+            expense = ExpenseLibrary(date_filter)
+            debt = DebtLibrary(date_filter)
+            expense_dict = dict(expense.get_dict(date_filter))
+            import pdb; pdb.set_trace()
+            debt_dict = dict(debt.get_dict(date_filter))
+            variables.update(expense_dict)
+            variables.update(debt_dict)
 
         context.update({'expenses_data': expenses_data})
         context.update({'colors_chart': COLORS})
