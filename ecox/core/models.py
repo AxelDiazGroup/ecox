@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
+from django.utils import timezone
+
 from djmoney.models.fields import MoneyField
 
 from model_utils.models import TimeStampedModel, TimeFramedModel
@@ -37,3 +39,14 @@ class Person(models.Model):
 
     def __str__(self):
         return "{}".format(self.name)
+
+
+class GetMoment(object):
+
+    def get_moment(self, date_filter, variables={}):
+        variables.update({'moment': 'current'})
+        if date_filter.month < timezone.now().month:
+            variables.update({'moment': 'past'})
+        elif date_filter.month > timezone.now().month:
+            variables.update({'moment': 'future'})
+        return variables
